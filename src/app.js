@@ -1,5 +1,8 @@
 import express from "express";
 import gemini from "./Client/gemini.js";
+import groq from "./Client/groq.js";
+
+import serveaiRoutes from "./routes/ai.routes.js";
 const app = express();
 
 export default app;
@@ -19,13 +22,9 @@ app.get("/healthcheck", (req, res) => {
 }) 
 
 
-app.post("/generate", async (req, res) => {
-    const { prompt } = req.body;
+app.use("/api", serveaiRoutes);
 
-    const response = await gemini.interactions.create({
-        model:"gemini-3.8-flash",
-        input:prompt
-    })
-    res.json({ response: response.output_text });
-})
+
+
+
 
