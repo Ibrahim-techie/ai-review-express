@@ -11,7 +11,7 @@ export default app;
 
 app.use(express.json());
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true
 }))
 
