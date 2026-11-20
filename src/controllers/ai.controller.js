@@ -1,31 +1,58 @@
-
-import { decode } from "he";
 import {
   getGeminiChatCompletion,
   getGroqChatCompletion,
 } from "../services/ai.service.js";
-
 export const generateResponse = async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    const decodedPrompt = decode(prompt);
+    let response;
 
-    const response =
-      (await getGroqChatCompletion(decodedPrompt)) ||
-      (await getGeminiChatCompletion(decodedPrompt));
+    try {
+      response = await getGroqChatCompletion(prompt);
 
-    const decodedResponse = decode(response);
+      if (!response?.trim()) {
+        throw new Error("Empty Groq response");
+      }
 
-    console.log("Decoded Response:", decodedResponse);
-    res.json({ data: decodedResponse });
+      if (process.env.NODE_ENV === "development") {
+        console.log("Using Groq");
+      }
+    } catch (groqError) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Groq failed:", groqError.message);
+      }
+
+      try {
+        response = await getGeminiChatCompletion(prompt);
+
+        if (!response?.trim()) {
+          throw new Error("Empty Gemini response");
+        }
+
+        if (process.env.NODE_ENV === "development") {
+          console.log("Using Gemini");
+        }
+      } catch (geminiError) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Gemini failed:", geminiError.message);
+        }
+        throw new Error(
+          `All providers failed. Groq: ${groqError.message}. Gemini: ${geminiError.message}`,
+        );
+      }
+    }
+
+    return res.json({
+      data: response,
+    });
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
       console.error("Error generating response:", error);
     }
 
-    res.status(500).json({
-      error: "Failed to generate response",
+    return res.status(500).json({
+      error: error.message,
     });
   }
 };
