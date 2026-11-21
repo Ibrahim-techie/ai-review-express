@@ -1,11 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
+import { config } from "../config.js";
 
-
-
-const gemini=new GoogleGenAI({
-    
-    apiKey: process.env.GEMINI_API_KEY||"AQ.Ab8RN6JGwE9mn1qC-x1KmTqYs16wf-0Cuogm6tzsB8ICcSxngQ"
-});
-
+// Never fall back to a hardcoded key: secrets belong in the environment.
+const gemini = config.gemini.apiKey
+  ? new GoogleGenAI({ apiKey: config.gemini.apiKey })
+  : null;
 
 export default gemini;
