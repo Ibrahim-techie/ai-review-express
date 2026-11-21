@@ -1,26 +1,35 @@
 {
   "name": "ai-review-express",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "AI code review: Groq + Gemini cross-checked reviews with a Monaco-based UI",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon --watch src src/server.js",
+    "dev:web": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend ci --include=dev && npm --prefix frontend run build",
+    "start": "node src/server.js",
+    "test": "node --test \"test/**/*.test.js\"",
+    "lint": "npm --prefix frontend run lint"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google/genai": "^3.6.1",
-    "@tailwindcss/vite": "^4.3.5",
+    "compression": "^1.8.2",
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
+    "express-rate-limit": "^8.7.5",
     "groq-sdk": "^1.6.0",
-    "tailwindcss": "^4.3.5"
+    "helmet": "^8.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20.12"
   }
 }
