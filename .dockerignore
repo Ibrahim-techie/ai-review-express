@@ -1,0 +1,14 @@
+**/node_modules
+frontend/dist
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+test
+*.log
+Dockerfile
+.dockerignore
+render.yaml
+README.md
+frontend/README.md

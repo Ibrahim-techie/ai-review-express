@@ -1,0 +1,21 @@
+# Render Blueprint: one web service that serves both the API and the built
+# frontend. In the Render dashboard choose New > Blueprint and point it at this
+# repository; you'll be asked for the two API keys.
+services:
+  - type: web
+    name: ai-review
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
