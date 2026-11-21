@@ -1,7 +1,11 @@
 import { Router } from "express";
-import {generateResponse } from "../controllers/ai.controller.js";
-import {validateReviewRequest} from "../validation/validaterequest.js";
+import { createReview, getMeta } from "../controllers/review.controller.js";
+import { reviewRateLimits } from "../middleware/rateLimit.js";
+import { validateReviewRequest } from "../validation/validaterequest.js";
+
 const router = Router();
 
-router.route("/generate").post(validateReviewRequest, generateResponse);
+router.get("/meta", getMeta);
+router.post("/review", ...reviewRateLimits, validateReviewRequest, createReview);
+
 export default router;
